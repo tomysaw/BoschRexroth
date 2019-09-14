@@ -14,6 +14,7 @@ namespace BoschRexroth.Root
         private IMqttClient _client;
 
         #region API
+        public bool IsInitialized { get; private set; }
 
         public void Start()
         {
@@ -33,6 +34,7 @@ namespace BoschRexroth.Root
                 Console.WriteLine("### CONNECTED WITH SERVER ###");
 
                 await _client.SubscribeAsync(new TopicFilterBuilder().WithTopic("#").Build());
+                IsInitialized = true;
 
                 Console.WriteLine("### SUBSCRIBED ###");
             });
@@ -64,7 +66,7 @@ namespace BoschRexroth.Root
             Console.WriteLine("### WAITING FOR APPLICATION MESSAGES ###");
         }
 
-        public void SetFrequency(short frequency)
+        public void SetFrequency(ushort frequency)
         {
             if (frequency <= 0 || frequency >= 50)
             {
@@ -76,6 +78,7 @@ namespace BoschRexroth.Root
                         .WithPayload(frequency.ToString())
                         .Build();
 
+            Console.WriteLine("Set Freq {0}", frequency);
             Publish(applicationMessage);
         }
 
@@ -101,6 +104,7 @@ namespace BoschRexroth.Root
                         .WithPayload(dir)
                         .Build();
 
+            Console.WriteLine("Move {0}", dir);
             Publish(applicationMessage);
         }
 
@@ -111,6 +115,7 @@ namespace BoschRexroth.Root
                         .WithPayload("stop")
                         .Build();
 
+            Console.WriteLine("Stop");
             Publish(applicationMessage);
         }
 

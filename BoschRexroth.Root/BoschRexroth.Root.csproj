@@ -25,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -36,6 +37,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bosch.VideoSDK.AxCameoLib">
+      <HintPath>C:\Program Files\Bosch\VideoSDK6\Interop\Bosch.VideoSDK.AxCameoLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Bosch.VideoSDK.CameoLib">
+      <HintPath>C:\Program Files\Bosch\VideoSDK6\Interop\Bosch.VideoSDK.CameoLib.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Bosch.VideoSDK.GCALib">
+      <HintPath>C:\Program Files\Bosch\VideoSDK6\Interop\Bosch.VideoSDK.GCALib.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.Win32.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Primitives.4.0.1\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
     </Reference>
@@ -120,9 +132,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MotorController.cs" />
+    <Compile Include="Encoder.cs" />
+    <Compile Include="MQTTController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RTSPVideoService.cs" />
+    <Compile Include="VideoSaver.cs" />
+    <Compile Include="VideoService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
