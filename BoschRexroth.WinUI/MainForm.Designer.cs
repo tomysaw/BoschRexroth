@@ -43,6 +43,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnExecute = new System.Windows.Forms.Button();
+            this.tbLog = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnCalibrate
@@ -191,11 +192,21 @@
             this.btnExecute.UseVisualStyleBackColor = true;
             this.btnExecute.Click += new System.EventHandler(this.btnExecute_Click);
             // 
+            // tbLog
+            // 
+            this.tbLog.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tbLog.Location = new System.Drawing.Point(0, 319);
+            this.tbLog.Multiline = true;
+            this.tbLog.Name = "tbLog";
+            this.tbLog.Size = new System.Drawing.Size(800, 84);
+            this.tbLog.TabIndex = 16;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 276);
+            this.ClientSize = new System.Drawing.Size(800, 403);
+            this.Controls.Add(this.tbLog);
             this.Controls.Add(this.btnExecute);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.label3);
@@ -235,6 +246,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnExecute;
+        private System.Windows.Forms.TextBox tbLog;
     }
 }
 

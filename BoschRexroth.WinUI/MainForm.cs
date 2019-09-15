@@ -21,7 +21,11 @@ namespace BoschRexroth.WinUI
         {
             InitializeComponent();
 
-            _mainController = new MainController(new Logger((str) => { }));
+            _mainController = new MainController(new Logger((str) => 
+            {
+                var format = string.Format("[{0}] {1}{2}", DateTime.Now.ToString("hh:mm:ss"), str, Environment.NewLine);
+                tbLog.Text += format;
+            }));
             _mainController.Initialize();
         }
 
