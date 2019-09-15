@@ -13,6 +13,9 @@ namespace BoschRexroth.Root
         double FPS;
         Mat hsvColorSample = new Mat();
         Mat hsv = new Mat();
+        RotatedRect ellipse;
+        double delta;
+        double N;
 
         static List<Point2f> ps = new List<Point2f>();
 
@@ -44,53 +47,101 @@ namespace BoschRexroth.Root
 
         public int?[] AddFrame(DateTime ts, Mat frame)
         {
-            Cv2.CvtColor(frame, hsv, ColorConversionCodes.BGR2HSV);
-            var p = DetectColor(hsv, hsvColorSample);
+            var p = GetMarkerPoint(frame);
             ps.Add(p);
+
+            if (ps.Count() > 5)
+            {
+                RotatedRect ellipse = Cv2.FitEllipse(ps.ToArray());
+            }
+
+            Trace.WriteLine($"Points count: {ps.Count()}");
+
             return new int?[0];
         }
 
+        const int RequiredPointCount = 400;
+
         public void Stop()
         {
-            throw new NotImplementedException();
+            if (ps.Count() < RequiredPointCount)
+                throw new ApplicationException("Not enough data points for calibration");
+
+            var y0 = ps.Take(ps.Count() / 2).Min(p => p.Y);
+            ps = ps.SkipWhile(p => p.Y > y0).ToList();
+            int i;
+            for (i = 0; i < ps.Count; i++)
+                if (i > 120 && ps[i].X >= ps[0].X && ps[i].X < ps[1].X)
+                    break;
+
+            Debug.Assert(i < 200);
+            N = i;
+            ps = ps.Take(i + 3).ToList();
+            delta = 360.0 / N;
         }
 
         public void DbgShowOver(Mat frame)
         {
             foreach (var p in ps)
-                frame.DrawMarker((int)p.X, (int)p.Y, Scalar.LightGreen);
+                frame.DrawMarker((int)p.X, (int)p.Y, Scalar.LightGreen, MarkerStyle.CircleFilled, size: 4);
 
-            Trace.WriteLine(ps.Count());
+            Cv2.Ellipse(frame, ellipse, Scalar.Red);
 
-            if (ps.Count() > 5)
-            {
-                var ellipse = Cv2.FitEllipse(ps.ToArray());
-                Cv2.Ellipse(frame, ellipse, Scalar.Red);
-            }
+            if (delta > 0)
+                for (int angle = 0; angle < 360; angle += 30)
+                {
+                    var p = AngleToPoint(angle);
+                    frame.DrawMarker((int)p.X, (int)p.Y, Scalar.Red, MarkerStyle.Cross, size: 10);
+                }
         }
 
-        bool IsComplete => false;
+        public bool CanStop => ps.Count() >= RequiredPointCount;
 
-        public bool CanStop => ps.Count() == 150;
-
-        Point2f GetMarkerPoint(Mat frame)
+        public Point2f GetMarkerPoint(Mat frame)
         {
-            throw new NotImplementedException();
+            Cv2.CvtColor(frame, hsv, ColorConversionCodes.BGR2HSV);
+            return DetectColor(hsv, hsvColorSample);
         }
 
-        float GetMarkerAngle(Mat frame)
+        public float GetMarkerAngle(Mat frame)
         {
-            throw new NotImplementedException();
+            return PointToAngle(GetMarkerPoint(frame));
         }
 
         Point2f AngleToPoint(double angle)
         {
-            throw new NotImplementedException();
+            int n = 0;
+            while (angle < 0)
+                angle += 360;
+            while (angle >= delta)
+            {
+                angle -= delta;
+                n++;
+            }
+            var p0 = ps[n + 0];
+            var p1 = ps[n + 1];
+            return p0 * (1 - angle) + p1 * angle;
         }
 
-        double PointToAngle(Point2f point)
+        float PointToAngle(Point2f point)
         {
-            throw new NotImplementedException();
+            try
+            {
+                double dd = 1000;
+                int ii = -1;
+                for (int i = 0; i < N; i++)
+                {
+                    var d = point.DistanceTo(ps[i + 0]) + point.DistanceTo(ps[i + 1]);
+                    if (dd < d)
+                        ii = i;
+                }
+
+                return (float)(delta * (ii + point.DistanceTo(ps[ii + 0]) / (point.DistanceTo(ps[ii + 0]) + point.DistanceTo(ps[ii + 1]))));
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
         }
 
     }

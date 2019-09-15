@@ -17,38 +17,38 @@ namespace BoschRexroth.Root
             var videoService = new RTSPVideoService();
             var videoSaver = new VideoSaver();
 
-            try
-            {
-                videoService.Initialize();
-                videoSaver.Initialize(videoService.Capture);
+            //try
+            //{
+            //    videoService.Initialize();
+            //    videoSaver.Initialize(videoService.Capture);
 
-                var controller = new MQTTController();
-                controller.Start();
-                WaitFor(() => controller.IsInitialized);
+            //    var controller = new MQTTController();
+            //    controller.Start();
+            //    WaitFor(() => controller.IsInitialized);
 
-                var queue = new ConcurrentQueue<Mat>();
+            //    var queue = new ConcurrentQueue<Mat>();
 
-                var source = new CancellationTokenSource();
-                Task.Factory.StartNew(() => videoService.Start(queue, source.Token));
-                Thread.Sleep(1000);
+            //    var source = new CancellationTokenSource();
+            //    Task.Factory.StartNew(() => videoService.Start(queue, null, source.Token));
+            //    Thread.Sleep(1000);
 
-                videoService.Seed = true;
-                Task.Factory.StartNew(() => videoSaver.ConsumeAndSaveAsync(queue, source.Token));
+            //    videoService.SeedForAnalysis = true;
+            //    Task.Factory.StartNew(() => videoSaver.ConsumeAndSaveAsync(queue, source.Token));
 
-                var encoder = new Encoder(controller);
-                //encoder.Calibrate_TimeSlot(1, 2, 3);
-                //encoder.Calibrate_TimeSlot(1, 2, 3, 4, 5, 7);
-                //encoder.Calibrate_TimeSlot(8, 10, 12, 15);
-                //Thread.Sleep(10000);
+            //    var encoder = new Encoder(controller);
+            //    //encoder.Calibrate_TimeSlot(1, 2, 3);
+            //    //encoder.Calibrate_TimeSlot(1, 2, 3, 4, 5, 7);
+            //    //encoder.Calibrate_TimeSlot(8, 10, 12, 15);
+            //    //Thread.Sleep(10000);
 
-                source.Cancel();
-                //videoSaver.ConsumeAndSave(queue);
-            }
-            catch (Exception ex)
-            {
-                videoSaver.Release();
-                Console.WriteLine(ex);
-            }
+            //    source.Cancel();
+            //    //videoSaver.ConsumeAndSave(queue);
+            //}
+            //catch (Exception ex)
+            //{
+            //    videoSaver.Release();
+            //    Console.WriteLine(ex);
+            //}
 
 
             //try

@@ -138,6 +138,7 @@
     <Compile Include="DriveActionController.cs" />
     <Compile Include="DriveCalibrationData.cs" />
     <Compile Include="Encoder.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="MainController.cs" />
     <Compile Include="IFrameProcessor.cs" />
     <Compile Include="MarkerCalibrationData.cs" />
@@ -154,6 +155,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="MarkerColor.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="VID_20190831_120949.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

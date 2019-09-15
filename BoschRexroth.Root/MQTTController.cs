@@ -12,12 +12,15 @@ namespace BoschRexroth.Root
     public class MQTTController
     {
         private IMqttClient _client;
+        private Logger _logger;
 
         #region API
         public bool IsInitialized { get; private set; }
 
-        public void Start()
+        public void Start(Logger logger)
         {
+            _logger = logger;
+
             var factory = new MqttFactory();
             _client = factory.CreateMqttClient();
             var clientOptions = new MqttClientOptions
@@ -31,17 +34,17 @@ namespace BoschRexroth.Root
 
             _client.ConnectedHandler = new MqttClientConnectedHandlerDelegate(async e =>
             {
-                Console.WriteLine("### CONNECTED WITH SERVER ###");
+                _logger.Log("### CONNECTED WITH SERVER ###");
 
                 await _client.SubscribeAsync(new TopicFilterBuilder().WithTopic("#").Build());
                 IsInitialized = true;
 
-                Console.WriteLine("### SUBSCRIBED ###");
+                _logger.Log("### SUBSCRIBED ###");
             });
 
             _client.DisconnectedHandler = new MqttClientDisconnectedHandlerDelegate(async e =>
             {
-                Console.WriteLine("### DISCONNECTED FROM SERVER ###");
+                _logger.Log("### DISCONNECTED FROM SERVER ###");
                 await Task.Delay(TimeSpan.FromSeconds(5));
 
                 try
@@ -50,7 +53,7 @@ namespace BoschRexroth.Root
                 }
                 catch
                 {
-                    Console.WriteLine("### RECONNECTING FAILED ###");
+                    _logger.Log("### RECONNECTING FAILED ###");
                 }
             });
 
@@ -60,10 +63,10 @@ namespace BoschRexroth.Root
             }
             catch (Exception exception)
             {
-                Console.WriteLine("### CONNECTING FAILED ###" + Environment.NewLine + exception);
+                _logger.Log("### CONNECTING FAILED ###" + Environment.NewLine + exception);
             }
 
-            Console.WriteLine("### WAITING FOR APPLICATION MESSAGES ###");
+            _logger.Log("### WAITING FOR APPLICATION MESSAGES ###");
         }
 
         public void SetFrequency(ushort frequency)
@@ -78,7 +81,7 @@ namespace BoschRexroth.Root
                         .WithPayload(frequency.ToString())
                         .Build();
 
-            Console.WriteLine("Set Freq {0}", frequency);
+            _logger.Log("Set Freq {0}", frequency);
             Publish(applicationMessage);
         }
 
@@ -104,7 +107,7 @@ namespace BoschRexroth.Root
                         .WithPayload(dir)
                         .Build();
 
-            Console.WriteLine("Move {0}", dir);
+            _logger.Log("Move {0}", dir);
             Publish(applicationMessage);
         }
 
@@ -115,7 +118,7 @@ namespace BoschRexroth.Root
                         .WithPayload("stop")
                         .Build();
 
-            Console.WriteLine("Stop");
+            _logger.Log("Stop");
             Publish(applicationMessage);
         }
 
