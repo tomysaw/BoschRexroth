@@ -28,7 +28,7 @@ namespace BoschRexroth.Root
 
         static Mat strel5 = Cv2.GetStructuringElement(MorphShapes.Ellipse, new Size(5, 5));
         static Mat strel9 = Cv2.GetStructuringElement(MorphShapes.Ellipse, new Size(9, 9));
-        public void Run()
+        static public void Run()
         {
             var capture = new VideoCapture(@"../../Data/r_1.mp4");
             capture.PosMsec = 4000;
@@ -36,6 +36,7 @@ namespace BoschRexroth.Root
             MarkerCalibrationData MCD = MarkerCalibrationData.Start(capture.Fps, new Mat("MarkerColor.png"));
 
             bool step = false;
+            int cnt = 0;
             var frame = new Mat();
             while (capture.Read(frame))
             {
@@ -45,14 +46,19 @@ namespace BoschRexroth.Root
                 }
 
                 MCD.AddFrame(DateTime.Now, frame);
-                MCD.DbgShowOver(frame);
-                Cv2.ImShow("frame", frame);
+
+                var key = 0;
 
                 if (MCD.CanStop)
-                    step = true;
+                {
+                    var cp = frame.Clone();
+                    MCD.DbgShowOver(cp);
+                    Cv2.ImShow("frame", cp);
 
-                var delay = (int)(1000 / capture.Fps);
-                var key = Cv2.WaitKey(1);
+                    var delay = (int)(1000 / capture.Fps);
+                    key = Cv2.WaitKey(0);
+                }
+
                 if (key == 27)
                     break;
                 if (key == 32 || step)
@@ -68,11 +74,18 @@ namespace BoschRexroth.Root
                             break;
                         }
 
+                        if (key == 'a')
+                        {
+                            MCD.Stop();
+                            MCD.DbgShowOver(frame);
+                            Cv2.ImShow("frame", frame);
+                            step = true;
+                        }
                     }
 
                 }
             }
-            outer:;
+        outer:;
         }
     }
 }

@@ -38,7 +38,7 @@ namespace BoschRexroth.Root
                 if (_mcd != null)
                 {
                     var marker = _mcd.GetMarkerPoint(frame);
-                    frame.DrawMarker((int)marker.X, (int)marker.Y, Scalar.Red, size: 20);
+                    frame.DrawMarker((int)marker.X, (int)marker.Y, Scalar.White, size: 20, thickness: 3);
                 }
 
                 Cv2.ImShow("cam", frame);

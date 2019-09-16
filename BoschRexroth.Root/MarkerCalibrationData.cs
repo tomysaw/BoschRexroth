@@ -74,7 +74,7 @@ namespace BoschRexroth.Root
                 if (i > 120 && ps[i].X >= ps[0].X && ps[i].X < ps[1].X)
                     break;
 
-            Debug.Assert(i < 200);
+            //Debug.Assert(i < 200);
             N = i;
             ps = ps.Take(i + 3).ToList();
             delta = 360.0 / N;

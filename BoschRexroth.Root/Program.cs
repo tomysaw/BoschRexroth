@@ -14,9 +14,7 @@ namespace BoschRexroth.Root
     {
         static void Main(string[] args)
         {
-            var videoService = new RTSPVideoService();
-            var videoSaver = new VideoSaver();
-
+            MarkerCalibrationDataTest.Run();
             //try
             //{
             //    videoService.Initialize();
@@ -72,10 +70,10 @@ namespace BoschRexroth.Root
 
             //Console.ReadKey();
 
-            
+
             //var capture = new VideoCapture(@"https://hackathon:!Hackath0n@192.168.0.2:554/onvif/device_service");
 
-            
+
         }
 
         private static void WaitFor(Func<bool> func, int maxIter = 5)
